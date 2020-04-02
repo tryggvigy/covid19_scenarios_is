@@ -7,14 +7,8 @@ import pandas as pd
 URL_CASES = "https://raw.githubusercontent.com/tryggvigy/CoronaWatchIS/master/data/covid_in_is.cvs"
 URL_HOSPITALIZED = "https://raw.githubusercontent.com/tryggvigy/CoronaWatchIS/master/data/covid_in_is_hosp.cvs"
 
-def parse_csv(url, input_data_col, data_col, filename, cumsum=False):
-    r = requests.get(url)
-    if not r.ok:
-        print(f"Failed to fetch {url}", file=sys.stderr)
-        exit(1)
-        r.close()
-
-    fd = io.StringIO(r.text)
+def parse(csv_text, input_data_col, data_col, cumsum=False):
+    fd = io.StringIO(csv_text)
     df = pd.read_csv(fd, usecols = ['Dagsetning' , input_data_col], header=0)
 
     # set column header names
@@ -25,6 +19,17 @@ def parse_csv(url, input_data_col, data_col, filename, cumsum=False):
 
     # Apply cumulative sum to data
     if cumsum: df[data_col] = df[data_col].cumsum()
+
+    return df
+
+def parse_csv(url, input_data_col, data_col, filename, cumsum=False):
+    r = requests.get(url)
+    if not r.ok:
+        print(f"Failed to fetch {url}", file=sys.stderr)
+        exit(1)
+        r.close()
+
+    df = parse(r.text, input_data_col, data_col, cumsum)
 
     print(df)
 

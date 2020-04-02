@@ -16,6 +16,9 @@ jobs:
       - name: Install Python dependencies
         run: |
           pipenv install
+      - name: Run unit tests
+        run: |
+          pipenv run -m unittest
       - name: Update data
         run: |
           pipenv run python generate_data.py
