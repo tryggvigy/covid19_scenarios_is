@@ -9,6 +9,7 @@ from pandas_schema.validation import \
     LeadingWhitespaceValidation, \
     TrailingWhitespaceValidation, \
     CustomSeriesValidation, \
+    CanCallValidation, \
     CanConvertValidation
 
 URL_CASES = "https://raw.githubusercontent.com/tryggvigy/CoronaWatchIS/master/data/covid_in_is.cvs"
@@ -47,15 +48,8 @@ schemas_by_key = {
         ])
     ]),
     'recovered':
-    Schema([
-        date_validator,
-        Column('recovered', [
-            *default_value_validators,
-            CanConvertValidation(int)
-            & CustomSeriesValidation(lambda x: x.is_monotonic_increasing,
-                                     'recovered is not monotonic')
-        ])
-    ]),
+    Schema([date_validator,
+            Column('recovered', [*default_value_validators])]),
     'hospitalized':
     Schema([
         date_validator,
@@ -93,6 +87,9 @@ def parse(csv_text, input_data_col, data_col, cumsum=False):
 
     # set date format YYYY-mm-dd
     df['date'] = pd.to_datetime(df.date).dt.date
+
+    # make nullable integer
+    df[data_col] = df[data_col].astype('Int64')
 
     # Apply cumulative sum to data
     if cumsum: df[data_col] = df[data_col].cumsum()
