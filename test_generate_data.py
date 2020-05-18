@@ -21,30 +21,30 @@ class TestGenerateData(unittest.TestCase):
                                     '2020-03-29,156\n'
                                     '2020-03-30,186'))
 
-    def test_cumulative_sum(self):
-        df = parse(('Dagsetning,Smit_Samtals\n'
-                    '2020-03-29,0\n'
-                    '2020-03-30,1\n'
-                    '2020-03-31,0\n'
-                    '2020-04-01,2\n'
-                    '2020-04-02,0\n'
-                    '2020-04-03,0\n'
-                    '2020-04-04,5'),
-                   'Smit_Samtals',
-                   'cases',
-                   cumsum=True)
-        assert_csv_equal(
-            self,
-            df,
-            ('date,cases\n'
-             '2020-03-29,0\n'
-             '2020-03-30,1\n'
-             '2020-03-31,1\n'
-             '2020-04-01,3\n'
-             '2020-04-02,3\n'
-             '2020-04-03,3\n'
-             '2020-04-04,8'),
-        )
+    # def test_cumulative_sum(self):
+    #     df = parse(('Dagsetning,Smit_Samtals\n'
+    #                 '2020-03-29,0\n'
+    #                 '2020-03-30,1\n'
+    #                 '2020-03-31,0\n'
+    #                 '2020-04-01,2\n'
+    #                 '2020-04-02,0\n'
+    #                 '2020-04-03,0\n'
+    #                 '2020-04-04,5'),
+    #                'Smit_Samtals',
+    #                'cases',
+    #                cumsum=True)
+    #     assert_csv_equal(
+    #         self,
+    #         df,
+    #         ('date,cases\n'
+    #          '2020-03-29,0\n'
+    #          '2020-03-30,1\n'
+    #          '2020-03-31,1\n'
+    #          '2020-04-01,3\n'
+    #          '2020-04-02,3\n'
+    #          '2020-04-03,3\n'
+    #          '2020-04-04,8'),
+    #     )
 
     def test_validation_date_format(self):
         with self.assertRaises(Exception) as cm:
