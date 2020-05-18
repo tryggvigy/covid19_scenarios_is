@@ -12,8 +12,7 @@ from pandas_schema.validation import \
     CanCallValidation, \
     CanConvertValidation
 
-URL_CASES = "https://raw.githubusercontent.com/tryggvigy/CoronaWatchIS/master/data/covid_in_is.cvs"
-URL_HOSPITALIZED = "https://raw.githubusercontent.com/tryggvigy/CoronaWatchIS/master/data/covid_in_is_hosp.cvs"
+URL_ALL = "https://raw.githubusercontent.com/tryggvigy/CoronaWatchIS/master/data/covid_in_is_all.cvs"
 
 date_validator = Column('date', [
     LeadingWhitespaceValidation(),
@@ -116,18 +115,14 @@ def build_data():
     Path('data').mkdir(parents=True, exist_ok=True)
 
     print('Downloading')
-    parse_csv(URL_CASES, 'Smit_Samtals', 'cases', 'cumulative_cases.cvs')
-    parse_csv(URL_CASES, 'Dauðsföll_Samtals', 'deaths',
-              'cumulative_deaths.cvs')
-    parse_csv(URL_CASES, 'Batnað_Samtals', 'recovered',
+    parse_csv(URL_ALL, 'Smit_Samtals', 'cases', 'cumulative_cases.cvs')
+    parse_csv(URL_ALL, 'Dauðsföll_Samtals', 'deaths', 'cumulative_deaths.cvs')
+    parse_csv(URL_ALL, 'Batnað_Samtals', 'recovered',
               'cumulative_recovered.cvs')
     # should not be cumulative counts
-    parse_csv(URL_HOSPITALIZED, 'Inniliggjandi', 'hospitalized',
+    parse_csv(URL_ALL, 'Inniliggjandi', 'hospitalized',
               'cumulative_hospitalized.cvs')
-    # Looks like this column should not be cumulative sum because Gjosgaesal_Samtals
-    # also exists but doesn't make sense (has no data until 2020-03-27, then spikes to 11).
-    # This is the cumulative sum column with the correct data.
-    parse_csv(URL_HOSPITALIZED, 'Gjorgaesla', 'ICU', 'cumulative_icu.cvs')
+    parse_csv(URL_ALL, 'Gjorgaesla_Samtals', 'ICU', 'cumulative_icu.cvs')
     print('Success')
 
 
