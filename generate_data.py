@@ -77,7 +77,7 @@ def validate(df):
         raise Exception(violations)
 
 
-def parse(csv_text, input_data_col, data_col, cumsum=False):
+def parse(csv_text, input_data_col, data_col, cumsum=False, fillna=False):
     fd = io.StringIO(csv_text)
     df = pd.read_csv(fd, usecols=['Dagsetning', input_data_col], header=0)
 
@@ -88,7 +88,10 @@ def parse(csv_text, input_data_col, data_col, cumsum=False):
     df['date'] = pd.to_datetime(df.date).dt.date
 
     # make nullable integer
-    df[data_col] = df[data_col].astype('Int64')
+    df[data_col] = df[data_col].astype(pd.Int32Dtype())
+
+    # Promote Na type to 0
+    df[data_col] = df[data_col].fillna(value=0)
 
     # Apply cumulative sum to data
     if cumsum: df[data_col] = df[data_col].cumsum()
@@ -122,7 +125,7 @@ def build_data():
     # should not be cumulative counts
     parse_csv(URL_ALL, 'Inniliggjandi', 'hospitalized',
               'cumulative_hospitalized.cvs')
-    parse_csv(URL_ALL, 'Gjorgaesla_Samtals', 'ICU', 'cumulative_icu.cvs')
+    parse_csv(URL_ALL, 'Gjorgaesla', 'ICU', 'cumulative_icu.cvs')
     print('Success')
 
 
